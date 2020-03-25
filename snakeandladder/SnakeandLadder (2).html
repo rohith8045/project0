@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake & Ladder</title>
+</head>
+
+<style type="text/css">
+div.dice{
+	float:left;
+	width:32px;
+	background:#FFCOCB;
+	border:#999 1px solid;
+	padding:10px;
+	font-size:24px;
+	text-align:center;
+	margin:5px;
+	margin-top: -100px;
+    margin-left: 200px;
+}
+</style>
+
+<body>
+    <center>
+	<canvas id="board" width="650" height="650" style="border:3px solid #000000">
+    </canvas>
+	</center>
+    <script type="text/javascript">	
+        //store the co-ordinates of all the squares.
+        var squares = new Array();
+        var canvas = document.getElementById("board");
+        var context = canvas.getContext("2d");
+        var contextText = canvas.getContext("2d");
+		var contextText2 = canvas.getContext("2d");
+        var squareSize = canvas.height / 10;
+        var currentPos = 0;  //Player 1 current position 
+		var currentPos2 = 0; //Player 2 current position
+		var currentPos3 = 0; //Player 1 previous position 
+		var currentPos4 = 0; //Player 2 previous position
+        
+        RenderSquareBoard();
+        RenderSnakeAndLadders();      
+
+        function RenderSquareBoard() 
+        {       	
+            var colorA = "white";
+            var colorB = "pink";
+
+            var initRow = 1; var totalRows = 10; var initcolumn = 1; var totalColumns = 10;
+
+            var x = 0; var y = canvas.height - squareSize;
+
+            var columnNr = 1; var leftToRight = true;
+            for (var row = initRow; row <= totalRows; row++) 
+            {
+                if (leftToRight) 
+                {
+                    x = 0;
+                }
+                else 
+                {
+                    x = canvas.width - squareSize;
+                }
+
+                for (var column = initcolumn; column <= totalColumns; column++) 
+                {
+                    if (columnNr % 2 == 0) 
+                    {
+                        context.fillStyle = colorA;
+                    }
+                    else 
+                    {
+                        context.fillStyle = colorB;
+                    }
+					context.fillRect(x, y, squareSize, squareSize);
+                    squares[columnNr] = x.toString() + ',' + y.toString();
+                    contextText.font = "15px tahoma";
+                    contextText.fillStyle = "blue";
+                    contextText.fillText(columnNr, x, y + squareSize);
+					
+                    var x1, y1
+                    if (leftToRight) 
+                    {
+                        x += squareSize;
+
+                        x1 = x + (squareSize / 2);
+                    }
+                    else 
+                    {
+                        x -= squareSize;
+                        x1 = x - (squareSize / 2);
+                    }
+
+                    y1 = y - (squareSize / 2);
+
+                    columnNr++;
+                }
+
+                y -= squareSize;
+                leftToRight = !leftToRight;
+            }
+        }
+
+        function RenderSnakeAndLadders()
+        {
+            var img = new Image();
+            img.onload = function () 
+            {
+            context.drawImage(img, 66, 23);
+            };
+            img.src = "redsnake.png";
+
+            var img1 = new Image();
+            img1.onload = function () 
+            {
+            context.drawImage(img1, 400, 200);
+            };
+            img1.src = "redsnake.png";
+			
+			var img4 = new Image();
+            img4.onload = function () 
+            {
+            context.drawImage(img4, 160, 30);
+            };
+            img4.src = "bluesnake.png";
+			
+			var img6 = new Image();
+            img6.onload = function () 
+            {
+            context.drawImage(img6, 200, 270);
+            };
+            img6.src = "Snakes.png";
+			
+			var img7 = new Image();
+            img7.onload = function () 
+            {
+            context.drawImage(img7, 30, 430);
+            };
+            img7.src = "redsnake.png";
+
+            var img2 = new Image();
+            img2.onload = function () {
+                context.drawImage(img2, 71, 166);
+            };
+            img2.src = "LadderA.gif";
+
+            var img3 = new Image();
+            img3.onload = function () 
+            {
+                context.drawImage(img3, 322, 366);
+            };
+            img3.src = "LadderA.gif"; 
+			
+			var img5 = new Image();
+            img5.onload = function () 
+            {
+                context.drawImage(img5, 592, 290);
+            };
+            img5.src = "LadderA.gif";  
+
+				var img8 = new Image();
+            img8.onload = function () 
+            {
+                context.drawImage(img8, 330, 40);
+            };
+            img8.src = "LadderA.gif";  
+        }
+
+        function initGame() 
+        {
+            window.location.reload();           
+        }
+
+        function GenerateRandomNumber(max) 
+        {
+            // max dictates that the random number will fall between 0-max
+            var rnd = Math.floor(Math.random() * (max + 1))
+
+            if (rnd == 0)
+            {
+                rnd = 1;
+            }
+        return rnd;
+        }
+
+        function nextMove() 
+        {
+			//to store previous moves
+			if(currentPos3 > 0 ){
+			var coorintaes3 = squares[currentPos3];
+			coorintaes3 = coorintaes3.split(',');
+			if(currentPos3%2 == 0){
+			context.fillStyle = "white";
+			}
+			else{
+			context.fillStyle = "pink";
+			}
+			//retaining the postion of other player.
+			if(currentPos2 == currentPos3){
+			context.fillStyle = "green";
+			}
+			context.fillRect(coorintaes3[0], coorintaes3[1], squareSize, squareSize);
+			context.font = "15px tahoma";
+			context.fillStyle = "blue";
+			var added = parseInt(coorintaes3[1], 10);
+			var adding = parseInt(coorintaes3[1], 10) + 65;
+			context.fillText(currentPos3,coorintaes3[0],adding);
+			RenderSnakeAndLadders();
+			
+		}
+           var newMove = GenerateRandomNumber(6);
+		   var die1 = document.getElementById("die1");
+	       die1.innerHTML = newMove;
+	        
+            currentPos = currentPos + newMove;
+			
+			//checking whether new position is > 100 if it is >100 then we are not moving the coin ahead
+			if(currentPos > 100){
+				currentPos = currentPos - newMove;
+			}
+
+            switch (currentPos) 
+            {
+            //ladder
+            case 6:
+            currentPos = 46;
+            break;
+            //ladder
+            case 11:
+            currentPos = 51;
+			break;
+			//ladder
+            case 55:
+            currentPos = 95;
+			break;
+			//ladder
+            case 39:
+            currentPos = 79;
+            break;
+            //snake
+            case 40:
+            currentPos = 4;
+            break;
+            //snake
+            case 67:
+            currentPos = 32;
+            break; 
+			//snake
+            case 57:
+            currentPos = 9;
+            break; 
+			//snake
+            case 93:
+            currentPos = 23;
+            break;
+			//snake
+            case 99:
+            currentPos = 64;
+            break; 			
+			
+            }
+
+            var coorintaes = squares[currentPos];
+            coorintaes = coorintaes.split(',');
+			
+			context.fillStyle = "yellow";
+			// if both players are on same position we are just decreasing the size of present player
+			var cor = parseInt(coorintaes[0], 10) + 10;
+			if(currentPos2 == currentPos){
+			context.fillRect(cor, coorintaes[1], 32, 65);
+			}
+			else{
+			context.fillRect(coorintaes[0], coorintaes[1], squareSize, squareSize);
+			}
+			//saving the previous position of  this coin into temp variable currentPos3
+			currentPos3 = currentPos;
+            if (currentPos == 100)
+            {
+                var greeting1 = document.getElementById("greeting1");
+				greeting1.innerHTML = "Congratulations Player 1, you have won the game.";
+                setTimeout(initGame, 3000);
+            }
+			
+			
+        }
+		
+		function nextMove2() 
+        {
+		
+		if(currentPos4 > 0 ){
+			
+			var coorintaes4 = squares[currentPos4];
+			coorintaes4 = coorintaes4.split(',');
+			if(currentPos4%2 == 0){
+			contextText2.fillStyle = "white";
+			}
+			else{
+			contextText2.fillStyle = "pink";
+			}
+			
+			if(currentPos4 == currentPos){
+			context.fillStyle = "yellow";
+			}
+			
+			contextText2.fillRect(coorintaes4[0], coorintaes4[1], squareSize, squareSize);
+			contextText2.font = "15px tahoma";
+			contextText2.fillStyle = "blue";
+			
+			
+			//alert("added "+parseInt(coorintaes3[1], 10));
+			var added = parseInt(coorintaes4[1], 10);
+			var adding = parseInt(coorintaes4[1], 10) + 65;
+			contextText2.fillText(currentPos4,coorintaes4[0],adding);
+			RenderSnakeAndLadders();
+		}
+		
+            var newMove = GenerateRandomNumber(6);
+			//var newMove = 1;
+            var die1 = document.getElementById("die1");
+	        die1.innerHTML = newMove;
+
+            currentPos2 = currentPos2 + newMove;
+			
+			if(currentPos2 > 100){
+			currentPos2 = currentPos2 - newMove;
+			}
+
+            switch (currentPos2) 
+            {
+            //ladder
+            case 6:
+            currentPos2 = 46;
+            break;
+            //ladder
+            case 11:
+            currentPos2 = 51;
+			break;
+			//ladder
+            case 55:
+            currentPos2 = 95;
+			break;
+			//ladder
+            case 39:
+            currentPos2 = 79;
+            break;
+            //snake
+            case 40:
+            currentPos2 = 4;
+            break;
+            //snake
+            case 67:
+            currentPos2 = 32;
+            break; 
+			//snake
+            case 57:
+            currentPos2 = 9;
+            break; 
+			//snake
+            case 93:
+            currentPos2 = 23;
+            break;
+			//snake
+            case 99:
+            currentPos2 = 64;
+            break; 			
+            }
+
+            var coorintaes = squares[currentPos2];
+			
+            coorintaes = coorintaes.split(',');
+
+			contextText2.fillStyle = "green";
+			//alert(parseInt(coorintaes[0], 10) + 10);
+			var cor = parseInt(coorintaes[0], 10) + 10;
+			
+			if(currentPos2 == currentPos){
+			contextText2.fillRect(cor, coorintaes[1], 32, 65);
+			}
+			
+			else{
+            contextText2.fillRect(coorintaes[0], coorintaes[1], squareSize, squareSize);
+			}
+
+            if (currentPos2 == 100)
+            {
+			 var greeting1 = document.getElementById("greeting1");
+	         greeting1.innerHTML = "Congratulations Player 2, you have won the game.";
+             setTimeout(initGame, 3000);
+            }
+			
+			//RenderSquareBoard2();
+			currentPos4 = currentPos2;
+        }
+		
+		
+    </script>
+
+	<center>
+	<div style=" margin-left: 977px;margin-top: -311px;">
+    <input type="button" value="New Game" onclick="initGame()" />
+    <input type="button" id="nextMove" value="Player 1" onclick="nextMove()" />
+	<input type="button" id="nextMove" value="Player 2" onclick="nextMove2()" />
+	<div id="die1" class="dice">0</div>
+	<div id="greeting1" style="margin-top: 21px;color: green;font-size: 17px; font-style: italic;"> </div>
+	</div>
+	</center>
+    
+</body>
+</html>
